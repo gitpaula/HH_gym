@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import Moment from 'react-moment';
+
 
 class Training_List extends Component {
     
@@ -14,9 +16,9 @@ componentDidMount() {
     }
     
     loadTraining = () => {
-    fetch ('https://customerrest.herokuapp.com/api/trainings')
+    fetch ('https://customerrest.herokuapp.com/gettrainings', {method:'GET'})
     .then(response => response.json())
-    .then (jsondata => this.setState({training: jsondata.content}))
+    .then (jsondata => this.setState({training: jsondata}))
     .catch(err => console.error(err));
     }
 
@@ -25,19 +27,35 @@ componentDidMount() {
 
         
         const columns = [
+           
+           
             {
-            Header: 'Date',
-            accessor: 'date'
-            },
-            {
-            Header: 'Duration',
-            accessor: 'duration'
-            },
-            {
-            Header: 'Activity',
-            accessor: 'activity'
-            }
-         
+                Header: 'Date',
+                accessor: 'date',
+            
+             },
+                {
+                Header: 'Duration',
+                accessor: 'duration'
+                },
+                {
+                Header: 'Activity',
+                accessor: 'activity'
+                },
+                {
+                    Header: 'Client',
+                    accessor: 'customer',
+                    Cell: row => {
+                        return (
+                          <div>
+                            <span>{row.row.customer.firstname}</span>
+                            <span>{' '}</span>
+                            <span>{row.row.customer.lastname}</span>
+                          </div>
+                        )
+                      }
+                    },
+
             ];
             
         
