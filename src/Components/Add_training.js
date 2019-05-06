@@ -14,7 +14,7 @@ class Add_training extends Component {
     constructor(props) {
         super(props);
         this.state = {open: false, date:'', duration:'', activity:''};
-        //this.props= {customer:''}; <-- This worked to transfer the link from Customers_List, but upon saving something broke in the training view. 
+        this.props= {customer:''}; //<-- This worked to transfer the link from Customers_List, but upon saving something broke in the training view. 
     }
     
         handleClickOpen = () => {
