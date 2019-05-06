@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import Moment from 'react-moment';
-
+import moment from 'moment';
+import Button from '@material-ui/core/Button';
 
 class Training_List extends Component {
     
@@ -21,9 +21,20 @@ componentDidMount() {
     .then (jsondata => this.setState({training: jsondata}))
     .catch(err => console.error(err));
     }
-
     
-    render() {
+    // training will be deleted based on the ID caught from the /gettrainings json data
+    deleteTraining = (id) => {
+        if(window.confirm('Are you sure?')){
+        fetch('https://customerrest.herokuapp.com/api/trainings/'+id,
+         {method:'DELETE'})
+        .then(res => this.loadTraining())
+        .catch(err => console.error(err));
+        }
+    }
+ 
+    render() 
+
+    {
 
         
         const columns = [
@@ -32,7 +43,8 @@ componentDidMount() {
             {
                 Header: 'Date',
                 accessor: 'date',
-            
+                Cell: row => <span>{moment.utc(row.value).format('DD.MM.YYYY hh:mm a')}</span>
+                
              },
                 {
                 Header: 'Duration',
@@ -43,9 +55,9 @@ componentDidMount() {
                 accessor: 'activity'
                 },
                 {
-                    Header: 'Client',
-                    accessor: 'customer',
-                    Cell: row => {
+                Header: 'Client',
+                accessor: 'customer',
+                Cell: row => {
                         return (
                           <div>
                             <span>{row.row.customer.firstname}</span>
@@ -54,8 +66,14 @@ componentDidMount() {
                           </div>
                         )
                       }
+                },
+                {
+                    Header: '',
+                    accessor: 'id',
+                    Cell: ({value}) => <Button color="primary" onClick={() => this.deleteTraining(value)}>Delete</Button>
                     },
-
+    
+               
             ];
             
         
@@ -69,11 +87,6 @@ componentDidMount() {
     }
 }
 
+
 export default Training_List;
 
-
-
-
-
-   
-   
