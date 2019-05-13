@@ -67,7 +67,7 @@ class Calendar extends Component {
             localizer={localizer}
             events={cal_events}
             step={30}
-            defaultView='week'
+            defaultView='month'
             views={['month','week','day']}
             defaultDate={new Date()}
           />
