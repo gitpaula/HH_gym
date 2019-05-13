@@ -3,7 +3,7 @@ import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-moment.locale('fi');
+moment.locale('en-GB');
 const localizer = BigCalendar.momentLocalizer(moment);
 
 class Calendar extends Component {
@@ -12,33 +12,54 @@ class Calendar extends Component {
         this.state = {cal_events: [] }
     }
     
+    
+        convertDate = (date) => {
+          return moment.utc(date).toDate() 
+        }
+    
+
     componentDidMount() {
         fetch('https://customerrest.herokuapp.com/api/trainings')
         .then(response => response.json())
-        //.then (jsondata => this.setState({customers: jsondata.content}))
         
         .then(jsondata => {
-            console.log(jsondata);
-            let appointments = jsondata.content;
-            
-            for (let i = 0; i < appointments.length; i++) {
-              appointments[i].content.date = moment.utc(appointments[i].content.date).toDate();
 
+            let calEvents = jsondata.content
+
+            for (let i = 0; i < calEvents.length; i++) {
+              let startDate = this.convertDate(calEvents[i].date)
+              let start = moment(startDate).subtract(3, 'hours')
+              let end = moment(start).add(calEvents[i].duration, 'm')
               
-            }
-            this.setState({
-              cal_events:appointments
+             
+                let items = {
+                title: calEvents[i].activity,
+                start: new Date(start),
+                end: new Date(end) 
+              }     
+        
+          
+          this.setState({
+          cal_events: [...this.state.cal_events, items] 
+           
             })
-      
-          })
-        .catch(err => console.error(err));
-        }    
 
+          
+          }
+
+
+        })
+        .catch(err => console.error(err));
+           
+    }
     
     render() {
+      
+      
         
-        const {cal_events} = this.state
-        
+       const {cal_events} = this.state
+          
+       console.log(cal_events)
         return (
             
         <div style={{ height: 700 }}>
